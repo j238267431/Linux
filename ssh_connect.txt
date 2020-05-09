@@ -1,0 +1,21 @@
+at linux OS (host)
+sudo apt-get update
+sudo apt-get install openssh-server
+sudo systemctl status sshd - check daemons
+ssh localhost - connect to ssh server, shell created
+ip a - get the IP address to connect from the guest OS (for the vertual box additional adapter2 must be turned on: attachecd to: Internal network)
+
+at Mac OS (guest)
+ssh 192.168.2.2 - IP address got using ip a command
+
+at linux OS (host)
+ssh-keygen - create ssh key
+scp /home/evgenij/.ssh/id_rsa - copy file with key to guest OS from linulx OS
+ -- or --
+cat ~/Desktop/id_rsa - look into the file and copy the code in it and paste to the file at Mac OS
+cp ~./ssh/id_rsa.pub ~/.ssh/authorized_keys - copy public key to the folder with authorized keys
+sudo chmod 600 /users/evgenij/desktop/id_rsa - change access rights - only owner can read and change 
+ssh evgenij@192.168.2.2 -i /users/evgenij/desktop/id_rsa - connecting to host linux OS using ssh key
+
+
+
