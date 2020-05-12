@@ -1,0 +1,84 @@
+script contents:
+#!/bin/bash
+mkdir -p tmp/lesson3/permissions
+cd tmp/lesson3/permissions
+touch file1.txt
+ln file1.txt file_hard_link.txt
+ln -s file1.txt file_soft_link.txt
+cat > file1.txt <<EOF
+text content
+EOF
+ln -s permissions/file_soft_link.txt ../file_soft_link_in_folder_lesson3.txt
+cd ../
+ls -laRi
+cat file_soft_link_in_folder_lesson3.txt
+cd permissions
+cat file1.txt
+cat file_soft_link.txt
+cat file_hard_link.txt
+mv file_softfile_soft_link.txt ../../
+mv file_hard_link.txt ../../
+cd ../../
+ls -lai
+
+вывод в тертинал:
+total 12
+557658 drwxrwxr-x 3 evgenij evgenij 4096 мая  9 17:59 .
+557657 drwxrwxr-x 3 evgenij evgenij 4096 мая  9 17:59 ..
+529323 lrwxrwxrwx 1 evgenij evgenij   30 мая  9 17:59 file_soft_link_in_folder_lesson3.txt -> permissions/file_soft_link.txt
+557659 drwxrwxr-x 2 evgenij evgenij 4096 мая  9 17:59 permissions
+
+./permissions:
+total 16
+557659 drwxrwxr-x 2 evgenij evgenij 4096 мая  9 17:59 .
+557658 drwxrwxr-x 3 evgenij evgenij 4096 мая  9 17:59 ..
+529318 -rw-rw-r-- 2 evgenij evgenij   13 мая  9 17:59 file1.txt
+529318 -rw-rw-r-- 2 evgenij evgenij   13 мая  9 17:59 file_hard_link.txt
+529321 lrwxrwxrwx 1 evgenij evgenij    9 мая  9 17:59 file_soft_link.txt -> file1.txt
+text content
+text content
+text content
+text content
+mv: cannot stat 'file_softfile_soft_link.txt': No such file or directory
+total 16
+557657 drwxrwxr-x 3 evgenij evgenij 4096 мая  9 17:59 .
+557634 drwxrwxr-x 4 evgenij evgenij 4096 мая  9 17:59 ..
+529318 -rw-rw-r-- 2 evgenij evgenij   13 мая  9 17:59 file_hard_link.txt
+557658 drwxrwxr-x 3 evgenij evgenij 4096 мая  9 17:59 lesson3
+evgenij@evgenij-VirtualBox:~/Linux$ rm -r tmp
+evgenij@evgenij-VirtualBox:~/Linux$ touch lesson3.txt
+evgenij@evgenij-VirtualBox:~/Linux$ cat > lesson3.txt
+
+запуск 
+./script.sh
+
+удаление
+rm -r tmp/
+
+Должны ли выведенные иноды совпадать или отличаться? Почему?
+У hardlink inode совпадают т/к/ hardlink указывает на номер inode.
+У soft link inode и у файла разные т/к/ softilnk указывает на имя файла
+
+повторить предыдущий пункт и вывести метаданные с содержимым. Работают все ссылки?
+нет, ссылка работате только у hardlink т/k/ указывает на inode
+
+
+3. Подготовка к большому делу.
+ используют для того чтобы участники группы имели права владельца файла чтобы например менять свой пароль или очки в игре
+- самостоятельно посмотреть, как изменить владельца пользователя и группу у файла (команда chmod) - Для этих целей в Unix используется команда chown
+
+4. Установка node из исходников
+cd /optsudo git clone https://github.com/nodejs/node.git
+cd node/
+sudo apt-get install python g++ make
+sudo apt install python3-distutils -y
+sudo ./configure
+sudo make -j2
+sudo make install
+evgenij@evgenij-VirtualBox:/opt/node$ node
+Welcome to Node.js v15.0.0-pre.
+Type ".help" for more information.
+> 4+4
+8
+
+
