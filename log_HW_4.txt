@@ -1,0 +1,91 @@
+task_1
+id
+ 
+(uid=1000(evgenij) gid=1000(evgenij) groups=1000(evgenij),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),116(lpadmin),126(sambashare))
+
+sudo useradd test
+sudo usermod -aG 4 test // this command add user test to the admin group with sudo // 
+
+
+or
+
+root@evgenij-VirtualBox:/home/evgenij/Linux# sudo visudo -f /etc/sudoers.d/test
+add this
+test   ALL=(ALL:ALL) NOPASSWD:ALL
+
+
+task_2
+evgenij@evgenij-VirtualBox:~/Linux$ sudo useradd user1 -d /home/user1 -m -s /bin/bash
+evgenij@evgenij-VirtualBox:~/Linux$ sudo useradd user2 -d /home/user2 -m -s /bin/bash
+evgenij@evgenij-VirtualBox:~/Linux$ sudo useradd user3 -d /home/user3 -m -s /bin/bash
+evgenij@evgenij-VirtualBox:~/Linux$ sudo usermod -aG developer user1
+evgenij@evgenij-VirtualBox:~/Linux$ sudo usermod -aG developer user2
+evgenij@evgenij-VirtualBox:~/Linux$ sudo usermod -aG developer user3
+test@evgenij-VirtualBox:/home/evgenij/Linux$ sudo mkdir /share
+test@evgenij-VirtualBox:/home/evgenij/Linux$ sudo chmod 777 /share
+root@evgenij-VirtualBox:/home/evgenij/Linux# sudo chown evgenij:developer share/
+evgenij@evgenij-VirtualBox:~/Linux$ echo $USER >> share/file1
+evgenij@evgenij-VirtualBox:~/Linux$ cat share/file1
+evgenij
+evgenij@evgenij-VirtualBox:~/Linux$ sudo su user1
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ echo $USER >> share/file1
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ cat share/file1
+evgenij
+user1
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ exit
+evgenij@evgenij-VirtualBox:~/Linux$ sudo su user2
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ echo $USER >> share/file1
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ cat share/file1
+evgenij
+user1
+user2
+
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ mkdir share/sub_share
+evgenij@evgenij-VirtualBox:~/Linux$ sudo chmod 1777 share/sub_share
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ touch share/sub_share/file_of_user1.txt
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ exit
+exit
+evgenij@evgenij-VirtualBox:~/Linux$ sudo su user2
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ rm share/sub_share/file_of_user1.txt
+rm: cannot remove 'share/sub_share/file_of_user1.txt': Operation not permitted
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ touch share/sub_share/file_of_user2.txt
+user2@evgenij-VirtualBox:/home/evgenij/Linux$ exit
+exit
+evgenij@evgenij-VirtualBox:~/Linux$ sudo su user1
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ rm share/sub_share/file_of_user2.txt
+rm: cannot remove 'share/sub_share/file_of_user2.txt': Operation not permitted
+user1@evgenij-VirtualBox:/home/evgenij/Linux$ rm share/sub_share/file_of_user1.txt
+
+task3
+#!/bin/bash
+  
+grep 'web' /etc/group
+if [[ $? == 0  ]] ; then
+echo 'success'
+else
+        sudo groupadd web
+fi
+grep 'geekbrains' /etc/group
+if [[ $? == 0  ]] ; then
+        echo 'success'
+else
+        sudo gruopadd geekbrains
+fi
+grep 'rockstar' /etc/passwd >> /dev/null
+if [[ $? == 0 ]] ; then
+        grep rockstar /etc/passwd | grep '143' >> /dev/null
+        if [[ $? == 0 ]] ; then
+                id rockstar | grep 'gid=2005' >> /dev/null
+                if [[ $? == 0 ]] ; then
+                        id rockstar | grep 'geekbrains' >> /dev/null
+                        if [[ $? == 0 ]] ; then
+                                id rockstar
+                        fi
+                fi
+        fi
+else
+        sudo useradd -u 143 rockstar -g web -G geekbrains -d /home/rockstar -m -s /bin/bash
+        id rockstar
+fi
+
+
