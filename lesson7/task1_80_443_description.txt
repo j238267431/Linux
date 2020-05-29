@@ -1,0 +1,15 @@
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+server{
+  listen 80;
+  server_name evgenij-VirtualBox;
+ location / {
+  if ($http_user != '') {
+   return 200 "Hi $http_user " ;
+ }
+   return 404 "Page not found ";
+ }
+}
+
+curl -L http://localhost -D - -H "Host: evgenij-VirtualBox" -H "User: Evgenij"
